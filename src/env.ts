@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export const env = {
+    isDev: process.env['NODE_ENV'] === 'development',
     isTest: process.env['NODE_ENV'] === 'test',
     app: {
         name: process.env['APP_NAME'] || 'app',

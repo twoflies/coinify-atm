@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <style>
+        html, body {
+            height:100%;
+        }
+    </style>
+
+    <title>Coinify ATM</title>
+</head>
+
+<body>
+    <div class="container h-100">
+        <div class="row align-items-center h-50">
+            <div class="col"></div>
+            <div class="col">
+                <form id="withdraw-form" class="form-inline">
+                    <label for="amount-input" class="sr-only">Amount</label>
+                    <input id="amount-input" name="amount" required="true" type="number" min="1" class="form-control mb-2 mr-sm-2"
+                        placeholder="Amount">
+
+                    <button id="submit-button" type="submit" class="btn btn-primary mb-2">Withdraw</button>
+                </form>
+                <div id="error-message" class="alert alert-danger invisible" role="alert"></div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div id="funds-display" class="row align-items-start h-50 invisible">
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Notes</h5>
+                        <p id="notes-text" class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Large Coins</h5>
+                        <p id="large-coins-text" class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Small Coins</h5>
+                        <p id="small-coins-text" class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <script>
+        $(function () {
+            $('#funds-display').fadeTo('fast', 0.2, function() {
+                $('#funds-display').removeClass('invisible');
+            });
+
+            $('#withdraw-form').on('submit', function (e) {
+                if (e.isDefaultPrevented()) {
+                    return false;
+                }
+                e.preventDefault();
+
+                $('#error-message').text('');
+                $('#error-message').addClass('invisible');
+                $('#submit-button').prop('disabled', true);
+
+                var withdrawal = {};
+                withdrawal[$('#amount-input').attr('name')] = $('#amount-input').val();
+                withdraw(withdrawal, displayWithdrawal, displayErrorMessage);
+
+                return false;
+            });
+        });
+
+        function withdraw(withdrawal, success, error) {
+            $.ajax({
+                type: "POST",
+                url: '/withdraw',
+                data: JSON.stringify(withdrawal),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: success,
+                error: (j) => error(j.statusText)
+            });
+        }
+
+        function displayWithdrawal(withdrawal) {
+            if (!withdrawal || !withdrawal.funds) {
+                displayErrorMessage('Invalid response from server.');
+                return;
+            }
+
+            var coallated = coallateFunds(withdrawal.funds);
+            $('#notes-text').html(coallated['notes'].join('<br>'));
+            $('#large-coins-text').html(coallated['large-coins'].join('<br>'));
+            $('#small-coins-text').html(coallated['small-coins'].join('<br>'));
+
+            $('#funds-display').fadeTo('fast', 1);
+            $('#submit-button').prop('disabled', false);
+        }
+
+        var notesLabels = {
+            'notes1000': '1000',
+            'notes500': '500',
+            'notes200': '200',
+            'notes100': '100',
+            'notes50': '50',
+        };
+        var largeCoinsLabels = {
+            'coins20': '20',
+            'coins5': '5',
+            'coins2': '2'
+        };
+        var smallCoinsLabels = {
+            'coins10': '10',
+            'coins1': '1'
+        };
+        var notesKeys = Object.keys(notesLabels);
+        var largeCoinsKeys = Object.keys(largeCoinsLabels);
+        var smallCoinsKeys = Object.keys(smallCoinsLabels);
+
+        function coallateFunds(funds) {
+            var keys = Object.keys(funds);
+            return {
+                'notes': keys.filter(k => notesKeys.includes(k) && funds[k]).map(k => `(${funds[k]}) ${notesLabels[k]}`),
+                'large-coins': keys.filter(k => largeCoinsKeys.includes(k) && funds[k]).map(k => `(${funds[k]}) ${largeCoinsLabels[k]}`),
+                'small-coins': keys.filter(k => smallCoinsKeys.includes(k) && funds[k]).map(k => `(${funds[k]}) ${smallCoinsLabels[k]}`),
+            };
+        }
+
+        function displayErrorMessage(message) {
+            $('#error-message').text(message);
+            $('#error-message').removeClass('invisible');
+            $('#submit-button').prop('disabled', false);
+        }
+    </script>
+</body>
+
+</html>
