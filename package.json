@@ -6,10 +6,12 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run serve",
-    "serve": "node dist/server.js",
-    "watch-node": "nodemon dist/server.js",
+    "serve": "npm run copy && node dist/server.js",
+    "test": "NODE_ENV=test mocha --require ts-node/register test/**/*.ts",
+    "copy": "cp -R src/public/ dist/public/",
     "watch-ts": "tsc -w",
-    "test": "NODE_ENV=test mocha --require ts-node/register test/**/*.ts"
+    "watch-node": "nodemon dist/server.js",
+    "watch-static": "nodemon -e js,html,css -i dist -x \"npm run serve\""
   },
   "author": "nathan.c.williams@gmail.com",
   "license": "ISC",

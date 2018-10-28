@@ -1,26 +1,38 @@
+import { Expose } from "class-transformer";
+
 export class Funds {
     public constructor(init?: Partial<Funds>) {
         Object.assign(this, init);
     }
 
+    @Expose({ name: "notes1000" })
     private _notes1000: number = 0;
 
+    @Expose({ name: "notes500" })
     private _notes500: number = 0;
 
+    @Expose({ name: "notes200" })
     private _notes200: number = 0;
 
+    @Expose({ name: "notes100" })
     private _notes100: number = 0;
 
+    @Expose({ name: "notes50" })
     private _notes50: number = 0;
 
+    @Expose({ name: "coins20" })
     private _coins20: number = 0;
 
+    @Expose({ name: "coins10" })
     private _coins10: number = 0;
 
+    @Expose({ name: "coins5" })
     private _coins5: number = 0;
 
+    @Expose({ name: "coins2" })
     private _coins2: number = 0;
 
+    @Expose({ name: "coins1" })
     private _coins1: number = 0;
 
     public get notes1000(): number {
