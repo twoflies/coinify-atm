@@ -4,7 +4,7 @@ import { Funds } from '../../src/models/funds';
 import { env } from '../../src/env';
 import { fail } from 'assert';
 
-describe('Transaction', () => {
+describe('TransactionService', () => {
     it('can be initialized without an initializer', () => {
         const service = new TransactionService();
         expect(service.availableFunds.getTotal()).to.equal(new Funds(env.app.funds).getTotal());
@@ -52,6 +52,24 @@ describe('Transaction', () => {
         const withdrawn = await service.withdraw(578);
         expect(withdrawn.getTotal()).to.equal(578);
         expect(funds.equals(withdrawn)).to.be.true;
+    });
+    it('will throw on insufficient funds', async () => {
+        const service = new TransactionService({
+            notes1000: 5,
+            notes200: 4,
+            coins20: 2,
+            coins1: 2
+        });
+
+        try
+        {
+            await service.withdraw(6842);
+            fail('Expected insufficient funds');
+        }
+        catch (error)
+        {
+            expect(error.message).to.equal('Insufficient funds');
+        }
     });
     it('will throw on insufficient bills', async () => {
         const service = new TransactionService({
