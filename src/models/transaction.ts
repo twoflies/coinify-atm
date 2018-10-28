@@ -1,7 +1,14 @@
 import { Funds } from './funds';
 
 export class Transaction {
-  amount: number = 0;
+    constructor(init?: Partial<Transaction>) {
+        if (init) {
+            this.amount = init.amount || 0;
+            this.funds = init.funds || new Funds();
+        }
+    }
 
-  funds: Funds;
+    amount: number = 0;
+
+    funds: Funds = new Funds();
 }

@@ -1,6 +1,5 @@
 import { JsonController, Get, Post, Body, HttpError, HeaderParam, Param } from 'routing-controllers';
 import { Transaction } from '../models/transaction';
-import { Funds } from '../models/funds';
 import { TransactionService } from '../services/transaction';
 
 @JsonController()

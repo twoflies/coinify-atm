@@ -8,7 +8,8 @@
     "start": "npm run serve",
     "serve": "node dist/server.js",
     "watch-node": "nodemon dist/server.js",
-    "watch-ts": "tsc -w"
+    "watch-ts": "tsc -w",
+    "test": "NODE_ENV=test mocha --require ts-node/register test/**/*.ts"
   },
   "author": "nathan.c.williams@gmail.com",
   "license": "ISC",
@@ -26,7 +27,12 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.5",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "typescript": "^3.1.3"
   }

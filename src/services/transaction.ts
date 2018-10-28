@@ -6,12 +6,16 @@ import { logger } from '../utils/logger';
 @Service()
 export class TransactionService {
 
-    private availableFunds: Funds;
+    private _availableFunds: Funds;
 
-    constructor() {
-        this.availableFunds = new Funds(env.app.funds);
+    constructor(init?: Partial<Funds>) {
+        this._availableFunds = new Funds(init || env.app.funds);
 
         logger.debug(`*Available funds: ${this.availableFunds.toString()}.`);
+    }
+
+    public get availableFunds(): Funds {
+        return this._availableFunds;
     }
 
     public async withdraw(amount: number): Promise<Funds> {
@@ -44,6 +48,8 @@ export class TransactionService {
         remaining -= (coins1 * 1);
 
         if (remaining > 0) {
+            logger.error(`Insufficient bills: ${this.availableFunds.toString()}.`);
+
             throw new Error('Insufficient bills');
         }
 
