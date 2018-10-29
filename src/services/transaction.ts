@@ -11,7 +11,7 @@ export class TransactionService {
     constructor(init?: Partial<Funds>) {
         this._availableFunds = new Funds(init || env.app.funds);
 
-        logger.debug(`*Available funds: ${this.availableFunds.toString()}.`);
+        logger.debug(`Available funds: ${this.availableFunds.toString()}.`);
     }
 
     public get availableFunds(): Funds {
@@ -22,7 +22,7 @@ export class TransactionService {
         if (amount > this.availableFunds.getTotal()) {
             logger.error(`Insufficient funds: ${this.availableFunds.toString()}.`);
 
-            throw new Error('Insufficient funds');
+            throw new Error('Insufficient funds.');
         }
 
         let remaining = amount;
@@ -50,7 +50,7 @@ export class TransactionService {
         if (remaining > 0) {
             logger.error(`Insufficient bills: ${this.availableFunds.toString()}.`);
 
-            throw new Error('Insufficient bills');
+            throw new Error('Insufficient bills.');
         }
 
         let funds: Funds = new Funds({
@@ -69,7 +69,7 @@ export class TransactionService {
         logger.debug(`Withdrawing funds: ${funds.toString()}.`);
         this.availableFunds.subtract(funds);
 
-        logger.debug(`*Available funds: ${this.availableFunds.toString()}.`);
+        logger.debug(`Available funds: ${this.availableFunds.toString()}.`);
 
         return funds;
     }
