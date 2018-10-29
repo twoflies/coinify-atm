@@ -99,7 +99,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: success,
-                error: (j) => error(j.statusText)
+                error: (jqXHR, statusText) => error(jqXHR.responseJSON || statusText)
             });
         }
 
@@ -147,7 +147,8 @@
             };
         }
 
-        function displayErrorMessage(message) {
+        function displayErrorMessage(error) {
+            var message = error.message || error;
             $('#error-message').text(message);
             $('#error-message').removeClass('invisible');
             $('#submit-button').prop('disabled', false);

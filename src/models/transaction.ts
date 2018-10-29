@@ -1,4 +1,5 @@
 import { Funds } from './funds';
+import { Expose } from 'class-transformer';
 
 export class Transaction {
     constructor(init?: Partial<Transaction>) {
@@ -8,7 +9,25 @@ export class Transaction {
         }
     }
 
-    amount: number = 0;
+    @Expose({ name: "amount" })
+    private _amount: number = 0;
 
-    funds: Funds = new Funds();
+    @Expose({ name: "funds" })
+    private _funds: Funds = new Funds();
+
+    public get amount(): number {
+        return this._amount;
+    }
+
+    public set amount(amount: number) {
+        this._amount = Math.max(amount, 0);
+    }
+
+    public get funds(): Funds {
+        return this._funds;
+    }
+
+    public set funds(funds: Funds) {
+        this._funds = funds || new Funds();
+    }
 }

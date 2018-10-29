@@ -1,4 +1,4 @@
-import { JsonController, Get, Post, Body, HttpError, HeaderParam, Param } from 'routing-controllers';
+import { JsonController, Post, Body, HttpError } from 'routing-controllers';
 import { Transaction } from '../models/transaction';
 import { TransactionService } from '../services/transaction';
 

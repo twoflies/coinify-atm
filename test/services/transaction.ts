@@ -64,11 +64,11 @@ describe('TransactionService', () => {
         try
         {
             await service.withdraw(6842);
-            fail('Expected insufficient funds');
+            fail('Expected insufficient funds.');
         }
         catch (error)
         {
-            expect(error.message).to.equal('Insufficient funds');
+            expect(error.message).to.equal('Insufficient funds.');
         }
     });
     it('will throw on insufficient bills', async () => {
@@ -82,11 +82,11 @@ describe('TransactionService', () => {
         try
         {
             await service.withdraw(578);
-            fail('Expected insufficient bills');
+            fail('Expected insufficient bills.');
         }
         catch (error)
         {
-            expect(error.message).to.equal('Insufficient bills');
+            expect(error.message).to.equal('Insufficient bills.');
         }
     });
 });
